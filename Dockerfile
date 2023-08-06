@@ -1,4 +1,5 @@
 FROM scratch
 WORKDIR /
+ENV PORT 8080
 COPY ./app /app
 ENTRYPOINT /app
