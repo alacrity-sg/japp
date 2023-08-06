@@ -24,6 +24,7 @@ jobs:
           path: ./app
   backend-docker-build:
     runs-on: ubuntu-latest
+    needs: backend-binary-build
     steps:
       - uses: actions/download-artifact@master
         with:
