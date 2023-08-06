@@ -1,4 +1,4 @@
 FROM scratch
 WORKDIR /
-COPY ./app /app
+COPY ./backend-binary /app
 ENTRYPOINT /app
