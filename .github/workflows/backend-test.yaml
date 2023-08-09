@@ -1,0 +1,53 @@
+name: Backend Go Test
+on:
+  push:
+    branches:
+      - main
+      - development
+  pull_request:
+    branches:
+      - main
+      - development
+env:
+  MARIADB_DATABASE: test_db
+  MARIADB_USER: test_user
+  MARIADB_PASSWORD: password
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '^1.20.6'
+      - name: Run unit test
+        run: |
+          go test
+  integration-test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:10.6
+        ports:
+          - 3306:3306
+        env:
+          MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v4
+        with:
+          go-version: '^1.20.6'
+      - name: Setup DB tables
+        working-directory: database
+        run: |
+          mysql -u ${{ env.MARIADB_USER }} -p ${{ env.MARIADB_PASSWORD }} ${{ env.MARIADB_DATABASE}} < tables.sql
+      - name: Run integration tests
+        working-directory: backend
+        env:
+          mysql_username: ${{ env.MARIADB_USER }}
+          mysql_password: ${{ env.MARIADB_PASSWORD }}
+          mysql_host: "localhost:3306"
+          mysql_db: ${{ env.MARIADB_DATABASE }}
+        run: |
+          go test
