@@ -1,9 +1,5 @@
 name: Application Build
-on:
-  workflow_run:
-    workflows:
-      - Backend Go Test
-  workflow_dispatch:
+on: [workflow_dispatch]
 
 jobs:
   backend-binary-build:

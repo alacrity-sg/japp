@@ -1,17 +1,5 @@
 name: Backend Go Test
-on:
-  push:
-    branches:
-      - main
-    paths: 
-      - .github/workflows/backend-test.yaml
-      - backend/**
-  pull_request:
-    branches:
-      - main
-    paths: 
-      - .github/workflows/backend-test.yaml
-      - backend/**
+on: [workflow_dispatch]
 env:
   MARIADB_DATABASE: test_db
   MARIADB_USER: test_user

@@ -21,16 +21,22 @@ jobs:
   sandbox_test:
     runs-on: ubuntu-latest
     env:
-      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
       MARIADB_USER: "sandbox"
       MARIADB_PASSWORD: "sandbox"
       MARIADB_DATABASE: "sandbox"
-    services:
-      mysql:
-        image: mariadb:10.6
-        ports:
-          - "3306:3306"
     steps:
+      - name: Shutdown Ubuntu MySQL (SUDO)
+        run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
+
+      - uses: getong/mariadb-action@v1.1
+        with:
+          host port: 3800
+          container port: 3307
+          mariadb version: '10.6'
+          mysql database: $MARIADB_DATABASE
+          mysql root password: $MARIADB_PASSWORD
+          mysql user: $MARIADB_USER
+          mysql password: $MARIADB_PASSWORD
       - name: "Checkout"
         uses: actions/checkout@v3
       
@@ -42,6 +48,6 @@ jobs:
         working-directory: database
         run: |
           flyway validate \
-            -url=jdbc:mysql://localhost:3306/$MARIADB_DATABASE \
+            -url=jdbc:mysql://localhost:3307/$MARIADB_DATABASE \
             -user=$MARIADB_USER \
             -password=$MARIADB_PASSWORD
