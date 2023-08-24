@@ -47,6 +47,6 @@ jobs:
         working-directory: database
         run: |
           flyway validate \
-            -url=jdbc:mysql://localhost:3307/$MARIADB_DATABASE \
+            -url=jdbc:mariadb://localhost:3307/$MARIADB_DATABASE \
             -user=$MARIADB_USER \
             -password=$MARIADB_PASSWORD
