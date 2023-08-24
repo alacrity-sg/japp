@@ -48,3 +48,10 @@ jobs:
             -url=jdbc:mariadb://localhost:3306/$MARIADB_DATABASE \
             -user=$MARIADB_USER \
             -password=$MARIADB_PASSWORD
+      - name: "Flyway Migrate"
+        working-directory: database
+        run: |
+          flyway migrate  \
+            -url=jdbc:mariadb://localhost:3306/$MARIADB_DATABASE \
+            -user=$MARIADB_USER \
+            -password=$MARIADB_PASSWORD
