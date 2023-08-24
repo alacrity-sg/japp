@@ -28,7 +28,7 @@ jobs:
       MARIADB_DATABASE: "sandbox"
     services:
       mysql:
-        image: mysql:10.6
+        image: mariadb:10.6
         ports:
           - "${MARIADB_PORT}:${MARIADB_PORT}"
     steps:
