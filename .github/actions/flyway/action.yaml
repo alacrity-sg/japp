@@ -1,0 +1,50 @@
+name: "Flyway Deployment"
+description: "Flyway Migration for MariaDB"
+
+inputs: 
+  host: 
+    description: "MYSQL Host"
+    required: true
+  port:
+    description: "MYSQL Port"
+    required: true
+    default: "3306"
+  user:
+    description: "MYSQL Username"
+    required: true
+  password:
+    description: "MYSQL Password"
+    required: true
+  database:
+    description: " MYSQL Database"
+    required: true
+  workdir:
+    description: "default workdir"
+    default: "./"
+  migrate:
+    description: "Set migrate to false"
+    default: "true"
+
+runs:
+  using: "composite"
+  steps:
+    - run: 
+      - name: "Install Flyway"
+        run: |
+          wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.13/flyway-commandline-8.5.13-linux-x64.tar.gz | tar xvz && sudo ln -s `pwd`/flyway-8.5.13/flyway /usr/local/bin 
+      
+      - name: "Flyway Check"
+        working-directory: ${{ inputs.WORKDIR }}
+        run: |
+          flyway validate \
+            -url=jdbc:mariadb://${{ inputs.HOST }}:${{ inputs.PORT }}/${{ inputs.DATABASE }} \
+            -user=${{ inputs.USER }} \
+            -password=${{ inputs.PASSWORD }}
+      - name: "Flyway Migrate"
+        if: ${{ inputs.MIGRATE == "true" }}
+        working-directory: ${{ inputs.WORKDIR }}
+        run: |
+          flyway migrate  \
+            -url=jdbc:mariadb://${{ inputs.HOST }}:${{ inputs.PORT }}/${{ inputs.DATABASE }} \
+            -user=${{ inputs.USER }} \
+            -password=${{ inputs.PASSWORD }}
