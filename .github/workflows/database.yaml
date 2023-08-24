@@ -1,0 +1,48 @@
+name: "Database/Flyway"
+
+concurrency: data-sql-${{ github.ref }}
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/data-workflow.yaml
+      - database/**
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/data-workflow.yaml
+      - database/**
+
+jobs:
+  sandbox_test:
+    runs-on: ubuntu-latest
+    env:
+      MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
+      MARIADB_USER: "sandbox"
+      MARIADB_PASSWORD: "sandbox"
+      MARIADB_PORT: "3306"
+      MARIADB_DATABASE: "sandbox"
+    services:
+      mysql:
+        image: mysql:10.6
+        ports:
+          - "${MARIADB_PORT}:${MARIADB_PORT}"
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      
+      - name: "Install Flyway"
+        run: |
+          wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.13/flyway-commandline-8.5.13-linux-x64.tar.gz | tar xvz && sudo ln -s `pwd`/flyway-8.5.13/flyway /usr/local/bin 
+      
+      - name: "Flyway Check"
+        working-directory: database
+        run: |
+          flyway validate \
+            -url=jdbc:mysql://localhost:${MARIADB_PORT}/${MARIADB_DATABASE} \
+            -user=${MARIADB_USER} \
+            -password=${MARIADB_PASSWORD}
