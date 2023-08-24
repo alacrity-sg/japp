@@ -36,22 +36,11 @@ jobs:
           mysql password: $MARIADB_PASSWORD
       - name: "Checkout"
         uses: actions/checkout@v3
-      
-      - name: "Install Flyway"
-        run: |
-          wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.13/flyway-commandline-8.5.13-linux-x64.tar.gz | tar xvz && sudo ln -s `pwd`/flyway-8.5.13/flyway /usr/local/bin 
-      
-      - name: "Flyway Check"
-        working-directory: database
-        run: |
-          flyway validate \
-            -url=jdbc:mariadb://localhost:3306/$MARIADB_DATABASE \
-            -user=$MARIADB_USER \
-            -password=$MARIADB_PASSWORD
-      - name: "Flyway Migrate"
-        working-directory: database
-        run: |
-          flyway migrate  \
-            -url=jdbc:mariadb://localhost:3306/$MARIADB_DATABASE \
-            -user=$MARIADB_USER \
-            -password=$MARIADB_PASSWORD
+      - uses: ./github/actions/flyway
+        with: 
+          host: localhost
+          port: 3306
+          user: $MARIADB_USER
+          password: $MARIADB_PASSWORD
+          database: $MARIADB_DATABASE
+          workdir: "./database"
