@@ -30,7 +30,7 @@ jobs:
       mysql:
         image: mariadb:10.6
         ports:
-          - "${MARIADB_PORT}:${MARIADB_PORT}"
+          - "$MARIADB_PORT:$MARIADB_PORT"
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
@@ -43,6 +43,6 @@ jobs:
         working-directory: database
         run: |
           flyway validate \
-            -url=jdbc:mysql://localhost:${MARIADB_PORT}/${MARIADB_DATABASE} \
-            -user=${MARIADB_USER} \
-            -password=${MARIADB_PASSWORD}
+            -url=jdbc:mysql://localhost:$MARIADB_PORT/$MARIADB_DATABASE \
+            -user=$MARIADB_USER \
+            -password=$MARIADB_PASSWORD
