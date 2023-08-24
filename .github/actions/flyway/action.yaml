@@ -30,11 +30,13 @@ runs:
   steps:
     - run: 
       - name: "Install Flyway"
+        shell: bash
         run: |
           wget -qO- https://repo1.maven.org/maven2/org/flywaydb/flyway-commandline/8.5.13/flyway-commandline-8.5.13-linux-x64.tar.gz | tar xvz && sudo ln -s `pwd`/flyway-8.5.13/flyway /usr/local/bin 
       
       - name: "Flyway Check"
         working-directory: ${{ inputs.WORKDIR }}
+        shell: bash
         run: |
           flyway validate \
             -url=jdbc:mariadb://${{ inputs.HOST }}:${{ inputs.PORT }}/${{ inputs.DATABASE }} \
@@ -43,6 +45,7 @@ runs:
       - name: "Flyway Migrate"
         if: ${{ inputs.MIGRATE == "true" }}
         working-directory: ${{ inputs.WORKDIR }}
+        shell: bash
         run: |
           flyway migrate  \
             -url=jdbc:mariadb://${{ inputs.HOST }}:${{ inputs.PORT }}/${{ inputs.DATABASE }} \
