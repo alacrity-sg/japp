@@ -34,7 +34,6 @@ jobs:
           container port: 3307
           mariadb version: '10.6'
           mysql database: $MARIADB_DATABASE
-          mysql root password: $MARIADB_PASSWORD
           mysql user: $MARIADB_USER
           mysql password: $MARIADB_PASSWORD
       - name: "Checkout"
