@@ -42,7 +42,6 @@ runs:
           -user=${{ inputs.USER }} \
           -password=${{ inputs.PASSWORD }}
     - name: "Flyway Migrate"
-      if: ${{ inputs.MIGRATE == "true" }}
       working-directory: ${{ inputs.WORKDIR }}
       shell: bash
       run: |
