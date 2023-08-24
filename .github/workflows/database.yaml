@@ -1,0 +1,47 @@
+name: "Database/Flyway"
+
+concurrency: data-sql-${{ github.ref }}
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - .github/workflows/data-workflow.yaml
+      - database/**
+
+  pull_request:
+    branches:
+      - main
+    paths:
+      - .github/workflows/data-workflow.yaml
+      - database/**
+
+jobs:
+  sandbox_test:
+    runs-on: ubuntu-latest
+    env:
+      MARIADB_USER: "sandbox"
+      MARIADB_PASSWORD: "sandbox"
+      MARIADB_DATABASE: "sandbox"
+    steps:
+      - name: Shutdown Ubuntu MySQL (SUDO)
+        run: sudo service mysql stop # Shutdown the Default MySQL, "sudo" is necessary, please not remove it
+
+      - uses: getong/mariadb-action@v1.1
+        with:
+          mariadb version: '10.6'
+          mysql database: $MARIADB_DATABASE
+          mysql user: $MARIADB_USER
+          mysql password: $MARIADB_PASSWORD
+      - name: "Checkout"
+        uses: actions/checkout@v3
+      - name: "Flyway"
+        uses: ./.github/actions/flyway
+        with: 
+          host: localhost
+          port: 3306
+          user: $MARIADB_USER
+          password: $MARIADB_PASSWORD
+          database: $MARIADB_DATABASE
+          workdir: "./database"
