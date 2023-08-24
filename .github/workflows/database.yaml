@@ -24,13 +24,12 @@ jobs:
       MARIADB_ALLOW_EMPTY_ROOT_PASSWORD: yes
       MARIADB_USER: "sandbox"
       MARIADB_PASSWORD: "sandbox"
-      MARIADB_PORT: "3306"
       MARIADB_DATABASE: "sandbox"
     services:
       mysql:
         image: mariadb:10.6
         ports:
-          - "$MARIADB_PORT:$MARIADB_PORT"
+          - "3306:3306"
     steps:
       - name: "Checkout"
         uses: actions/checkout@v3
@@ -43,6 +42,6 @@ jobs:
         working-directory: database
         run: |
           flyway validate \
-            -url=jdbc:mysql://localhost:$MARIADB_PORT/$MARIADB_DATABASE \
+            -url=jdbc:mysql://localhost:3306/$MARIADB_DATABASE \
             -user=$MARIADB_USER \
             -password=$MARIADB_PASSWORD
