@@ -36,7 +36,7 @@ jobs:
           mysql password: $MARIADB_PASSWORD
       - name: "Checkout"
         uses: actions/checkout@v3
-      - uses: ./github/actions/flyway
+      - uses: ./.github/actions/flyway
         with: 
           host: localhost
           port: 3306
